@@ -65,6 +65,7 @@
         const fromInput = document.getElementById("from_city");
         const toInput = document.getElementById("to_city");
         const submitBtn = document.getElementById("calculate-button");
+        const placesList = document.getElementById("places_list");
 
         let selected = [];
 
@@ -87,18 +88,20 @@
             submitBtn.disabled = selected.length !== 2;
         }
 
-        document.querySelectorAll(".place-row").forEach(row => {
-            row.addEventListener("click", () => {
-                const cityName = row.dataset.city;
+        placesList.addEventListener("click", (event) => {
+            const row = event.target.closest(".place-row");
+            if (!row) return;
 
-                if (selected.includes(cityName)) {
-                    selected = selected.filter(x => x !== cityName);
-                } else if (selected.length < 2) {
-                    selected.push(cityName);
-                }
+            const cityName = row.dataset.city;
+            if (!cityName) return;
 
-                updateUI();
-            });
+            if (selected.includes(cityName)) {
+                selected = selected.filter(x => x !== cityName);
+            } else if (selected.length < 2) {
+                selected.push(cityName);
+            }
+
+            updateUI();
         });
 
         document.addEventListener("turbo:submit-end", function (e) {
@@ -107,5 +110,7 @@
                 updateUI();
             }
         });
+        updateUI();
     });
+
 </script>

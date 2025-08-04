@@ -3,7 +3,7 @@ class SavedDistancesController < ApplicationController
     @saved_distance = SavedDistance.new
   end
 
-  def create
+  def create_old
     empty_lists = Place.any?
     from_data = GeocoderYandexApi.coordinates(params[:saved_distance][:from])
     to_data = GeocoderYandexApi.coordinates(params[:saved_distance][:to])
@@ -44,6 +44,34 @@ class SavedDistancesController < ApplicationController
     end
   end
 
+  def create
+    empty_lists = Place.none?
+
+    service = CreateOrUpdateSavedDistance.new(params[:saved_distance][:from], params[:saved_distance][:to])
+
+    unless service.call
+      return render_form_with_error(service.error, SavedDistance.new)
+    end
+
+    @saved_distance = service.saved_distance
+    @from = service.from_place
+    @to = service.to_place
+
+    from_present = !service.from_place_previously_new?
+    to_present = !service.to_place_previously_new?
+
+    if service.existing_was_found?
+      return render turbo_stream: build_streams(@saved_distance, @from, @to, from_present, to_present)
+    end
+
+    if @saved_distance.persisted?
+      streams = build_streams(@saved_distance, @from, @to, from_present, to_present)
+      streams << replace_empty_state(empty_lists)
+      render turbo_stream: streams.flatten
+    else
+      render_form_with_error(@saved_distance.errors.full_messages.join(', '), @saved_distance)
+    end
+  end
 
   private
 

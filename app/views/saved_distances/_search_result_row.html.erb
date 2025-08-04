@@ -8,7 +8,7 @@
     <%= "[#{result.to.latitude}, #{result.to.longitude}]" %>
   </td>
   <td class="px-6 py-4 font-medium text-green-900 whitespace-nowrap">
-    <%= "#{result.distance}" %>
+    <%= "#{result.distance.round(3)}" %>
   </td>
   <td class="px-6 py-4 text-right">
     <a href="#" class="font-medium text-blue-600 hover:underline">hide</a>
