@@ -1,0 +1,2 @@
+module SavedDistancesHelper
+end

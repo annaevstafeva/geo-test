@@ -1,0 +1,18 @@
+@import "tailwindcss";
+
+.input-text {
+    @apply bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5;
+}
+
+.button-emerald {
+    @apply text-emerald-700 border border-emerald-700 font-medium rounded-lg text-sm text-center me-2 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed;
+}
+
+.button-emerald:not(:disabled):hover {
+    @apply text-emerald-50 bg-emerald-800;
+}
+
+.button-emerald:focus {
+    @apply ring-4 outline-none ring-emerald-300;
+}
+

@@ -1,0 +1,16 @@
+<tr class="bg-white border-b border-green-200 hover:bg-green-50">
+  <th id="<%= dom_id(result) %>" scope="row" class="px-6 py-4 font-medium text-green-900 whitespace-nowrap">
+    <%= "#{result.from.city_name}, #{result.from.country_name}" %>
+    <%= "[#{result.from.latitude}, #{result.from.longitude}]" %>
+  </th>
+  <td class="px-6 py-4 font-medium text-green-900 whitespace-nowrap">
+    <%= "#{result.to.city_name}, #{result.to.country_name}" %>
+    <%= "[#{result.to.latitude}, #{result.to.longitude}]" %>
+  </td>
+  <td class="px-6 py-4 font-medium text-green-900 whitespace-nowrap">
+    <%= "#{result.distance}" %>
+  </td>
+  <td class="px-6 py-4 text-right">
+    <a href="#" class="font-medium text-blue-600 hover:underline">hide</a>
+  </td>
+</tr>

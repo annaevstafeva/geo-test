@@ -1,0 +1,13 @@
+<div id="distance_form">
+  <%= form_with model: saved_distance, url: saved_distances_path, method: :post, format: :turbo_stream, data: { turbo: true, controller: 'form', action: 'turbo:submit-end->form#reset' }, class: 'flex justify-center items-center gap-3' do |ff| %>
+    <%= ff.text_field :from, value: '', placeholder: "From City...", class: 'input-text', required: true %>
+
+    <%= ff.text_field :to, value: '', placeholder: "To City...", class: 'input-text', required: true %>
+
+    <%= ff.submit "Calculate", disable_with: 'Calculate', class: 'button-emerald px-5 py-2.5 ' %>
+  <% end %>
+
+  <% if local_assigns[:error].present? %>
+    <div class="text-red-600 mt-2 text-sm"><%= local_assigns[:error] %></div>
+  <% end %>
+</div>

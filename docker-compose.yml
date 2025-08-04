@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+
+  application:
+    container_name: application
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    environment:
+      - PIDFILE=tmp/pids/server_1.pid
+    ports:
+      - '3001:3000'
+    volumes:
+      - ./:/var/www/geo_test_again
+
+
+  postgres_db:
+    container_name: postgres
+    image: postgres
+    environment:
+      POSTGRES_USER: geo_test_again
+      POSTGRES_PASSWORD: GeO014TEst98agAIn53
+      PGDATA: /tmp
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres:/var/lib/postgresql/data
+      # If postgres container contain file with permissions postgres:postrges
+      # stop container then comment string below, up container without string and rebuild with uncommented string
+      # problem seen on docker-desktop mac os x
+      - ./config/postgresql.conf:/var/lib/postgresql/data/postgresql.conf
+
+#  nginx:
+#    container_name: balancer
+#    build:
+#      context: .
+#      dockerfile: config/docker/Dockerfile.nginx
+#    depends_on:
+#      - application
+#    ports:
+#      - '80:80'
+#    links:
+#      - application
+
+volumes:
+  postgres:
+    driver: local

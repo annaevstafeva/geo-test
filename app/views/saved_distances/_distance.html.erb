@@ -1,0 +1,111 @@
+<div class="grid grid-cols-2 gap-6 mt-10">
+  <div>
+    <div class="flex justify-between items-center h-12">
+      <div>Сохраненные места для рассчета дистанции</div>
+      <%= form_with scope: :saved_distance, url: saved_distances_path, method: :post, format: :turbo_stream, id: "distance-selector-form", data: { turbo: true }, class: "" do |f| %>
+        <%= f.hidden_field :from, id: "from_city" %>
+        <%= f.hidden_field :to, id: "to_city" %>
+        <div class="relative group inline-block">
+          <%= f.submit "Рассчитать", class: "button-emerald px-5 py-1.5", disabled: true, id: "calculate-button", data: { tooltip: true } %>
+          <div class="absolute w-40 -top-8 left-1/2 -translate-x-1/2 bg-stone-800/70 text-white text-xs rounded px-2 py-1 opacity-0 transition-opacity duration-200 group-hover:opacity-100 pointer-events-none" id="tooltip">
+            Нет сохранённых/выбранных мест
+          </div>
+        </div>
+      <% end %>
+    </div>
+    <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+      <table class="w-full text-sm text-left rtl:text-right text-stone-500">
+        <thead class="text-xs text-stone-700 uppercase bg-stone-100 w-full">
+        <% if @places.any? %>
+          <%= render 'places/place_header' %>
+        <% else %>
+          <tr id="empty_state_places" class="py-4 flex justify-center">
+            <th>
+              <%= render 'elements/empty_state' %>
+            </th>
+          </tr>
+        <% end %>
+        </thead>
+        <tbody id="places_list">
+        <% @places.each do |p| %>
+          <%= render 'places/place_item', place: p %>
+        <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div>
+    <div class="flex justify-between items-center h-12">История поиска</div>
+    <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+      <table class="w-full text-sm text-left rtl:text-right text-stone-500 dark:text-stone-400">
+
+        <thead class="text-xs text-stone-700 uppercase bg-stone-100">
+        <% if @saved_distances.any? %>
+          <%= render 'saved_distances/distance_header' %>
+        <% else %>
+          <tr id="empty_state_distance" class="py-4 flex justify-center">
+            <th>
+              <%= render 'elements/empty_state' %>
+            </th>
+          </tr>
+        <% end %>
+        </thead>
+        <tbody id="distances_list">
+        <% @saved_distances.each do |sd| %>
+          <%= render 'saved_distances/distance_item', distance: sd %>
+        <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const fromInput = document.getElementById("from_city");
+        const toInput = document.getElementById("to_city");
+        const submitBtn = document.getElementById("calculate-button");
+
+        let selected = [];
+
+        function updateUI() {
+            document.querySelectorAll(".place-row").forEach(row => {
+                const cityName = row.dataset.city;
+                const checkbox = row.querySelector("input[type='checkbox']");
+
+                checkbox.checked = selected.includes(cityName);
+
+                if (selected.length === 2 && !selected.includes(cityName)) {
+                    row.classList.add("pointer-events-none", "opacity-40");
+                } else {
+                    row.classList.remove("pointer-events-none", "opacity-40");
+                }
+            });
+
+            fromInput.value = selected[0] || "";
+            toInput.value = selected[1] || "";
+            submitBtn.disabled = selected.length !== 2;
+        }
+
+        document.querySelectorAll(".place-row").forEach(row => {
+            row.addEventListener("click", () => {
+                const cityName = row.dataset.city;
+
+                if (selected.includes(cityName)) {
+                    selected = selected.filter(x => x !== cityName);
+                } else if (selected.length < 2) {
+                    selected.push(cityName);
+                }
+
+                updateUI();
+            });
+        });
+
+        document.addEventListener("turbo:submit-end", function (e) {
+            if (e.detail.success) {
+                selected = [];
+                updateUI();
+            }
+        });
+    });
+</script>

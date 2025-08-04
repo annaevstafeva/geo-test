@@ -1,0 +1,20 @@
+<div class="">
+  <div class="">
+    <div class="mb-10 uppercase text-blue-600 border-b border-green-200">PFUkjadfjlsk</div>
+    <div id="distance_form">
+      <div>
+        <%= render 'saved_distances/new', saved_distance: @saved_distance || SavedDistance.new %>
+      </div>
+    </div>
+    <div id="search_result" class="">
+      <% if @result %>
+        <%= render 'saved_distances/search_result', result: @result %>
+      <% else %>
+        <div class="flex justify-center">
+          <%= render partial: 'elements/empty_state' %>
+        </div>
+      <% end %>
+    </div>
+    <%= render 'saved_distances/distance' %>
+  </div>
+</div>
